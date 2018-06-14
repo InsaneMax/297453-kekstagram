@@ -269,14 +269,14 @@ main {
   width: 20px;
   height: 16px;
 
-  background-position: 0 -53px;
+  background-position: 0 -58px;
 }
 
 .picture__stat--likes::before {
   width: 20px;
   height: 16px;
 
-  background-position: 0 -80px;
+  background-position: 0 -87px;
 }
 
 

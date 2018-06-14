@@ -40,20 +40,17 @@ var getRandomPictures = function (quantity) {
   return randomPictures;
 };
 
-var images = getRandomPictures(25);
-
 var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
 
-var getRenderPicture = function (picture) {
+var createPictureElement = function (picture) {
   var renderElement = pictureTemplate.cloneNode(true);
   renderElement.querySelector('.picture__img').src = picture.url;
   renderElement.querySelector('.picture__img').alt = picture.description;
   renderElement.querySelector('.picture__stat--likes').textContent = picture.likes;
-  renderElement.querySelector('.picture__stat--comments').textContent = picture.comments;
+  renderElement.querySelector('.picture__stat--comments').textContent = picture.comments.length;
   return renderElement;
 };
 
-var picturesContainer = document.querySelector('.pictures');
 var randomAvatar = 'img/avatar-' + getRandomNumber(1, 6) + '.svg';
 
 var displayPhoto = function (photo) {
@@ -70,11 +67,12 @@ var displayPhoto = function (photo) {
   document.querySelector('.big-picture').classList.remove('hidden');
 };
 
-displayPhoto(images[1]);
+var images = getRandomPictures(25);
 
-var fragment = document.createDocumentFragment();
+displayPhoto(images[getRandomNumber(0, images.length)]);
 
-for (var i = 0; i < images.length; i++) {
-  fragment.appendChild(getRenderPicture(images[i]));
-  picturesContainer.appendChild(fragment);
-}
+var picturesContainer = document.querySelector('.pictures');
+
+images.forEach(function (image) {
+  picturesContainer.appendChild(createPictureElement(image));
+});
