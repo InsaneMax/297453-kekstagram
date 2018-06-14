@@ -40,9 +40,8 @@ var getRandomPictures = function (quantity) {
   return randomPictures;
 };
 
-var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
-
 var createPictureElement = function (picture) {
+  var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
   var renderElement = pictureTemplate.cloneNode(true);
   renderElement.querySelector('.picture__img').src = picture.url;
   renderElement.querySelector('.picture__img').alt = picture.description;
@@ -51,17 +50,14 @@ var createPictureElement = function (picture) {
   return renderElement;
 };
 
-var randomAvatar = 'img/avatar-' + getRandomNumber(1, 6) + '.svg';
-
 var displayPhoto = function (photo) {
+  var randomAvatar = 'img/avatar-' + getRandomNumber(1, 6) + '.svg';
   document.querySelector('.big-picture__img img').src = photo.url;
   document.querySelector('.likes-count').textContent = photo.likes;
   document.querySelector('.comments-count').textContent = photo.comments.length;
   document.querySelector('.social__caption').textContent = photo.description;
-
   document.querySelector('.social__text').textContent = photo.comments;
   document.querySelector('.social__picture').src = randomAvatar;
-
   document.querySelector('.social__comment-count').classList.add('visually-hidden');
   document.querySelector('.social__loadmore').classList.add('visually-hidden');
   document.querySelector('.big-picture').classList.remove('hidden');
@@ -71,8 +67,7 @@ var images = getRandomPictures(25);
 
 displayPhoto(images[getRandomNumber(0, images.length)]);
 
-var picturesContainer = document.querySelector('.pictures');
-
 images.forEach(function (image) {
+  var picturesContainer = document.querySelector('.pictures');
   picturesContainer.appendChild(createPictureElement(image));
 });
