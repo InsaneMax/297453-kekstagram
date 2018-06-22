@@ -22,13 +22,19 @@ var pictureDescription = [
   'Вот это тачка!'
 ];
 
+// случайный элемент массива
+
 var getRandomElemFromArray = function (arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
+// случайное число в диапозоне мин макс
+
 var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 };
+
+// случайные комментарии, лайки и описания в каждом объкте картинки
 
 var getRandomPictures = function (quantity) {
   var randomPictures = [];
@@ -43,6 +49,8 @@ var getRandomPictures = function (quantity) {
   return randomPictures;
 };
 
+// создание темплейта с данными из параметра picture
+
 var createPictureElement = function (picture) {
   var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
   var renderElement = pictureTemplate.cloneNode(true);
@@ -55,6 +63,8 @@ var createPictureElement = function (picture) {
 
 var bigPicture = document.querySelector('.big-picture');
 var bigPictureClose = document.querySelector('.big-picture__cancel');
+
+// показ большой картинки
 
 var displayPhoto = function (photo) {
   var randomAvatar = 'img/avatar-' + getRandomNumber(1, 6) + '.svg';
@@ -69,6 +79,8 @@ var displayPhoto = function (photo) {
   openGallery();
 };
 
+// переменная для массива с обектами похожих картинок
+
 var images = getRandomPictures(25);
 
 // displayPhoto(images[getRandomNumber(0, images.length)]);
@@ -79,26 +91,32 @@ images.forEach(function (image) {
   pictures.appendChild(createPictureElement(image));
 });
 
+// функция - обработчик закрытия галереи при нажатии ESC
+
 var onImageEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeGallery();
   }
 };
 
+// показ большой картинки
+
 var openGallery = function () {
   document.querySelector('.big-picture').classList.remove('hidden');
   document.addEventListener('keydown', onImageEscPress);
 };
 
-pictures.addEventListener('click', function () {
-  openGallery();
-});
+// pictures.addEventListener('click', function () {
+//   openGallery();
+// });
 
-pictures.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    openGallery();
-  }
-});
+// pictures.addEventListener('keydown', function (evt) {
+//   if (evt.keyCode === ENTER_KEYCODE) {
+//     openGallery();
+//   }
+// });
+
+// закрытие большой картинки
 
 var closeGallery = function () {
   document.querySelector('.big-picture').classList.add('hidden');
@@ -114,3 +132,53 @@ bigPictureClose.addEventListener('keydown', function (evt) {
     closeGallery();
   }
 });
+
+// загрузка изображения и показ формы
+
+var uploadFile = pictures.querySelector('#upload-file');
+console.log(uploadFile);
+
+var effectsContainer = pictures.querySelector('.img-upload__overlay');
+console.log(effectsContainer);
+
+var uploadCancel = pictures.querySelector('#upload-cancel');
+
+// функция открытия окна редактирования фото
+
+var openUpload = function () {
+  effectsContainer.classList.remove('hidden');
+  document.addEventListener('keydown', onUploadEscPress)
+}
+
+// функция закрытия окна редактирования фото
+
+var closeUpload = function () {
+  effectsContainer.classList.add('hidden');
+  document.removeEventListener('keydown', onUploadEscPress)
+}
+
+// закрытие окна по нажатию на ESC
+
+var onUploadEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeUpload();
+  }
+}
+
+uploadFile.addEventListener('change', function() {
+  openUpload();
+});
+
+uploadCancel.addEventListener('click', function() {
+  closeUpload();
+})
+
+var scalePin = effectsContainer.querySelector('.scale__pin');
+console.log(scalePin);
+
+scalePin.addEventListener('mouseup', function() {
+  console.log('mouse up');
+})
+
+var effectsItem = effectsContainer.querySelector('.effects__item')
+console.log(effectsItem)
