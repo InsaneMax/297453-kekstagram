@@ -53,12 +53,12 @@ var getRandomPictures = function (quantity) {
 
 var createPictureElement = function (picture) {
   var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
-  var renderElement = pictureTemplate.cloneNode(true);
-  renderElement.querySelector('.picture__img').src = picture.url;
-  renderElement.querySelector('.picture__img').alt = picture.description;
-  renderElement.querySelector('.picture__stat--likes').textContent = picture.likes;
-  renderElement.querySelector('.picture__stat--comments').textContent = picture.comments.length;
-  return renderElement;
+  var pictureElement = pictureTemplate.cloneNode(true);
+  pictureElement.querySelector('.picture__img').src = picture.url;
+  pictureElement.querySelector('.picture__img').alt = picture.description;
+  pictureElement.querySelector('.picture__stat--likes').textContent = picture.likes;
+  pictureElement.querySelector('.picture__stat--comments').textContent = picture.comments.length;
+  return pictureElement;
 };
 
 var bigPicture = document.querySelector('.big-picture');
@@ -76,7 +76,7 @@ var displayPhoto = function (photo) {
   bigPicture.querySelector('.social__picture').src = randomAvatar;
   bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
   bigPicture.querySelector('.social__loadmore').classList.add('visually-hidden');
-  openGallery();
+  openBigPicture();
 };
 
 // переменная для массива с обектами похожих картинок
@@ -95,69 +95,96 @@ images.forEach(function (image) {
 
 var onImageEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
-    closeGallery();
+    closeBigPicture();
   }
 };
 
-// показ большой картинки
+// функция которая срабатывает, если передаем ее вторым аргументом в другой функции event
+// открывает большую картинку только если было нажатие на элементе с классом picture__img
 
-var openGallery = function () {
-  document.querySelector('.big-picture').classList.remove('hidden');
-  document.addEventListener('keydown', onImageEscPress);
-};
+var onPictureClick = function (evt) {
+  if (evt.target.className === 'picture__img') {
+    openBigPicture();
+  }
+}
 
-// pictures.addEventListener('click', function () {
-//   openGallery();
-// });
+// вызываем слушатель по клику на маленькую картинку и соответсвенно открываем большую картнинку
 
-// pictures.addEventListener('keydown', function (evt) {
-//   if (evt.keyCode === ENTER_KEYCODE) {
-//     openGallery();
-//   }
-// });
+pictures.addEventListener('click', onPictureClick);
 
-// закрытие большой картинки
+// устанавливаем слушатель по нажатию на малeнькую картинку с помощью ENTER
 
-var closeGallery = function () {
-  document.querySelector('.big-picture').classList.add('hidden');
-  document.removeEventListener('keydown', onImageEscPress);
-};
-
-bigPictureClose.addEventListener('click', function () {
-  closeGallery();
-});
-
-bigPictureClose.addEventListener('keydown', function (evt) {
+pictures.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    closeGallery();
+    openBigPicture();
   }
 });
+
+// функция для event'a для закрытия большой картинки по клику
+
+var onBigPictureCloseClick = function () {
+  closeBigPicture();
+}
+
+// функционал открытия большой картинки. устанавливаем слушатель - по ESC закрытие, удаляем слушатель на клик по маленькой картинке
+// устанавливаем слушатель для клика по крестику "закрыть"
+
+var openBigPicture = function () {
+  bigPicture.classList.remove('hidden');
+  document.addEventListener('keydown', onImageEscPress);
+  pictures.removeEventListener('click', onPictureClick);
+  bigPictureClose.addEventListener('click', onBigPictureCloseClick);
+};
+
+// функционал закрытия большой картинки. удаляем слушаетель по нажатию ESC и устанавливаем слушатель на клик по мальнькой картинке
+// удаляем слушатель для клика по крестику "закрыть"
+
+var closeBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  document.removeEventListener('keydown', onImageEscPress);
+  pictures.addEventListener('click', onPictureClick);
+  bigPictureClose.removeEventListener('click', onBigPictureCloseClick);
+};
 
 // загрузка изображения и показ формы
 
 var uploadFile = pictures.querySelector('#upload-file');
-console.log(uploadFile);
-
 var effectsContainer = pictures.querySelector('.img-upload__overlay');
-console.log(effectsContainer);
-
 var uploadCancel = pictures.querySelector('#upload-cancel');
 
-// функция открытия окна редактирования фото
+// функция для event'a для открытия интерфейса с фильтрами по загрузке фото
+
+var onUploadChange = function () {
+  openUpload();
+}
+
+// устанавливаем слушатель на клик по иконке загрузки фото и соответсвенно показываем интерфейс с фильтрами
+
+uploadFile.addEventListener('change', onUploadChange);
+
+// функция открытия интерфейса с фильтрами, устанавливаем слушатель на ESC и удаляем слушатель для загрузки фото
+// устанавливаем слушатели по нажитию на ENTER и клик по крестику
 
 var openUpload = function () {
   effectsContainer.classList.remove('hidden');
-  document.addEventListener('keydown', onUploadEscPress)
+  document.addEventListener('keydown', onUploadEscPress);
+  uploadFile.removeEventListener('change', onUploadChange);
+  uploadCancel.addEventListener('click', onUploadCancelClick);
+  uploadCancel.addEventListener('keydown', onUploadCancelPress);
 }
 
-// функция закрытия окна редактирования фото
+// функция закрытия окна редактирования фото, удаляем слушатель на ESC и утанавливаем слушатель для загрузки фото
+// удаляем слушатели по нажитию на ENTER и клик по крестику
 
 var closeUpload = function () {
   effectsContainer.classList.add('hidden');
-  document.removeEventListener('keydown', onUploadEscPress)
+  document.removeEventListener('keydown', onUploadEscPress);
+  uploadFile.addEventListener('change', onUploadChange);
+  uploadCancel.removeEventListener('click', onUploadCancelClick);
+  uploadCancel.removeEventListener('keydown', onUploadCancelPress);
 }
 
-// закрытие окна по нажатию на ESC
+// функция для event'a при нажатии на ESC- закрывается интерфейс с фильтрами
 
 var onUploadEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
@@ -165,20 +192,79 @@ var onUploadEscPress = function (evt) {
   }
 }
 
-uploadFile.addEventListener('change', function() {
-  openUpload();
-});
+// функция для event'a при клике на крестик- закрывается интерфейс с фильтрами
 
-uploadCancel.addEventListener('click', function() {
+var onUploadCancelClick = function () {
   closeUpload();
-})
+}
+
+// функция для event'a при нажатии на ENTER на крестике - закрывается интерфейс с фильтрами
+
+var onUploadCancelPress = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closeUpload();
+  }
+}
+
+// управление ползунком и фильтрами
 
 var scalePin = effectsContainer.querySelector('.scale__pin');
-console.log(scalePin);
+var scaleLevel = effectsContainer.querySelector('.scale__level');
+
+// функция позиционирования ползунка на шкале
+
+var setDefaultPinPosition = function () {
+  scalePin.style.left = '50%';
+  scaleLevel.style.width = '50%';
+}
+
+setDefaultPinPosition();
+
+var filterList = effectsContainer.querySelector('.effects__list');
+var scaleLine = effectsContainer.querySelector('.scale__line');
+
+// устанавливаем изначальное значение фильтра, которое будет меняться
+
+var currentFilter = 'none';
+
+// слушаем изменения в списке фильтров
+
+filterList.addEventListener('change', onChange);
+
+// слушаем отпускание пина, обьявляем переменные 1.текущая позиция ползунка 2.стиль текущего фильтра
+// который расчитан в функции getValueFilter()
 
 scalePin.addEventListener('mouseup', function() {
-  console.log('mouse up');
-})
+  var value = parseInt(scalePin.style.left, 10);
+  var filterStyle = getValueFilter(currentFilter, value);
+});
+
+// функция рассчета фильтра в зависимости от положения ползунка и текущего эффекта
+
+var getValueFilter = function (filterType, value) {
+   var levelsFilters = {
+    none: '',
+    chrome: 'grayscale(' + value / 100 + ')',
+    sepia: 'sepia(' + value / 100 + ')',
+    marvin: 'invert(' + value + '%)',
+    phobos: 'blur(' + 3 * value / 100 + 'px)',
+    heat: 'brightness(' + ((2 * value / 100) + 1) + ')'
+  };
+  return levelsFilters[filterType];
+}
+
+var imagePreview = document.querySelector('.img-upload__preview');
+console.log(imagePreview);
+
+var onChange = function (evt) {
+  var filterType = evt.target.value; // sepia;
+  imagePreview.classList.add('effects__preview--'+ filterType);
+  imagePreview.classList.remove('effects__preview--'+ currentFilter);
+  currentFilter = filterType;
+  var value = parseInt(scalePin.style.left, 10) //50
+  var filterStyle = getValueFilter(filterType, value);
+  imagePreview.style.filter = filterStyle;
+}
 
 var effectsItem = effectsContainer.querySelector('.effects__item')
 console.log(effectsItem)
