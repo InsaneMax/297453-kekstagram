@@ -104,7 +104,7 @@ var onImageEscPress = function (evt) {
 
 var onPictureClick = function (evt) {
   if (evt.target.className === 'picture__img') {
-    openBigPicture();
+      displayPhoto(images[getRandomNumber(0, images.length)]);
   }
 };
 
