@@ -206,7 +206,7 @@ var onUploadCancelPress = function (evt) {
   }
 };
 
-// управление ползунком и фильтрами
+// далее код для работы функциоанала фильтров
 
 var scalePin = effectsContainer.querySelector('.scale__pin');
 var scaleLevel = effectsContainer.querySelector('.scale__level');
@@ -214,8 +214,8 @@ var scaleLevel = effectsContainer.querySelector('.scale__level');
 // функция позиционирования ползунка на шкале
 
 var setDefaultPinPosition = function () {
-  scalePin.style.left = '50%';
-  scaleLevel.style.width = '50%';
+  scalePin.style.left = '30%';
+  scaleLevel.style.width = '30%';
 };
 
 setDefaultPinPosition();
@@ -225,18 +225,6 @@ var filterList = effectsContainer.querySelector('.effects__list');
 // устанавливаем изначальное значение фильтра, которое будет меняться
 
 var currentFilter = 'none';
-
-// слушаем изменения в списке фильтров
-
-filterList.addEventListener('change', onChange);
-
-// слушаем отпускание пина, обьявляем переменные 1.текущая позиция ползунка 2.стиль текущего фильтра
-// который расчитан в функции getValueFilter()
-
-scalePin.addEventListener('mouseup', function () {
-  var value = parseInt(scalePin.style.left, 10);
-  var filterStyle = getValueFilter(currentFilter, value);
-});
 
 // функция рассчета фильтра в зависимости от положения ползунка и текущего эффекта
 
@@ -254,12 +242,26 @@ var getValueFilter = function (filterType, value) {
 
 var imagePreview = document.querySelector('.img-upload__preview img');
 
+// функция для event'a чтобы менять классы и добавлять стили на большой картинке в зависимости от текущего фильтра
+
 var onChange = function (evt) {
   var filterType = evt.target.value; // sepia;
   imagePreview.classList.add('effects__preview--' + filterType);
   imagePreview.classList.remove('effects__preview--' + currentFilter);
   currentFilter = filterType;
-  var value = parseInt(scalePin.style.left, 10); // 50
+  var value = parseInt(scalePin.style.left, 10); // 30
   var filterStyle = getValueFilter(filterType, value);
   imagePreview.style.filter = filterStyle;
 };
+
+// слушаем изменения в списке фильтров
+
+filterList.addEventListener('change', onChange);
+
+// слушаем отпускание пина, обьявляем переменные 1.текущая позиция ползунка 2.стиль текущего фильтра
+// который расчитан в функции getValueFilter()
+
+scalePin.addEventListener('mouseup', function () {
+  var value = parseInt(scalePin.style.left, 10);
+  var filterStyle = getValueFilter(currentFilter, value);
+});
