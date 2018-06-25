@@ -49,6 +49,28 @@ var getRandomPictures = function (quantity) {
   return randomPictures;
 };
 
+var bigPicture = document.querySelector('.big-picture');
+var bigPictureClose = document.querySelector('.big-picture__cancel');
+
+// показ большой картинки
+
+var changeBigPictureContent = function (photo) {
+  var randomAvatar = 'img/avatar-' + getRandomNumber(1, 6) + '.svg';
+  bigPicture.querySelector('.big-picture__img img').src = photo.url;
+  bigPicture.querySelector('.likes-count').textContent = photo.likes;
+  bigPicture.querySelector('.comments-count').textContent = photo.comments.length;
+  bigPicture.querySelector('.social__caption').textContent = photo.description;
+  bigPicture.querySelector('.social__text').textContent = photo.comments;
+  bigPicture.querySelector('.social__picture').src = randomAvatar;
+  bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
+  bigPicture.querySelector('.social__loadmore').classList.add('visually-hidden');
+};
+
+// переменная для массива с обектами похожих картинок
+
+var images = getRandomPictures(25);
+var picturesContainer = document.querySelector('.pictures');
+
 // создание темплейта с данными из параметра picture
 
 var createPictureElement = function (picture) {
@@ -61,35 +83,25 @@ var createPictureElement = function (picture) {
   return pictureElement;
 };
 
-var bigPicture = document.querySelector('.big-picture');
-var bigPictureClose = document.querySelector('.big-picture__cancel');
-
-// показ большой картинки
-
-var displayPhoto = function (photo) {
-  var randomAvatar = 'img/avatar-' + getRandomNumber(1, 6) + '.svg';
-  bigPicture.querySelector('.big-picture__img img').src = photo.url;
-  bigPicture.querySelector('.likes-count').textContent = photo.likes;
-  bigPicture.querySelector('.comments-count').textContent = photo.comments.length;
-  bigPicture.querySelector('.social__caption').textContent = photo.description;
-  bigPicture.querySelector('.social__text').textContent = photo.comments;
-  bigPicture.querySelector('.social__picture').src = randomAvatar;
-  bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
-  bigPicture.querySelector('.social__loadmore').classList.add('visually-hidden');
-  openBigPicture();
+var createPictures = function (objects) {
+  var fragment = document.createDocumentFragment();
+  objects.forEach(function (image) {
+    var newPicture = createPictureElement(image);
+    newPicture.addEventListener('click', function () {
+      openBigPicture(image);
+    });
+    fragment.appendChild(newPicture);
+  });
+  return fragment;
 };
 
-// переменная для массива с обектами похожих картинок
+var renderPictures = function (fragment) {
+  picturesContainer.appendChild(fragment);
+};
 
-var images = getRandomPictures(25);
+var pictures = createPictures(images);
 
-// displayPhoto(images[getRandomNumber(0, images.length)]);
-
-var pictures = document.querySelector('.pictures');
-
-images.forEach(function (image) {
-  pictures.appendChild(createPictureElement(image));
-});
+renderPictures(pictures);
 
 // функция - обработчик закрытия галереи при нажатии ESC
 
@@ -98,27 +110,6 @@ var onImageEscPress = function (evt) {
     closeBigPicture();
   }
 };
-
-// функция которая срабатывает, если передаем ее вторым аргументом в другой функции event
-// открывает большую картинку только если было нажатие на элементе с классом picture__img
-
-var onPictureClick = function (evt) {
-  if (evt.target.className === 'picture__img') {
-      displayPhoto(images[getRandomNumber(0, images.length)]);
-  }
-};
-
-// вызываем слушатель по клику на маленькую картинку и соответсвенно открываем большую картнинку
-
-pictures.addEventListener('click', onPictureClick);
-
-// устанавливаем слушатель по нажатию на малeнькую картинку с помощью ENTER
-
-pictures.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    openBigPicture();
-  }
-});
 
 // функция для event'a для закрытия большой картинки по клику
 
@@ -129,10 +120,10 @@ var onBigPictureCloseClick = function () {
 // функционал открытия большой картинки. устанавливаем слушатель - по ESC закрытие, удаляем слушатель на клик по маленькой картинке
 // устанавливаем слушатель для клика по крестику "закрыть"
 
-var openBigPicture = function () {
+var openBigPicture = function (object) {
   bigPicture.classList.remove('hidden');
+  changeBigPictureContent(object);
   document.addEventListener('keydown', onImageEscPress);
-  pictures.removeEventListener('click', onPictureClick);
   bigPictureClose.addEventListener('click', onBigPictureCloseClick);
 };
 
@@ -142,15 +133,13 @@ var openBigPicture = function () {
 var closeBigPicture = function () {
   bigPicture.classList.add('hidden');
   document.removeEventListener('keydown', onImageEscPress);
-  pictures.addEventListener('click', onPictureClick);
-  bigPictureClose.removeEventListener('click', onBigPictureCloseClick);
 };
 
 // загрузка изображения и показ формы
 
-var uploadFile = pictures.querySelector('#upload-file');
-var effectsContainer = pictures.querySelector('.img-upload__overlay');
-var uploadCancel = pictures.querySelector('#upload-cancel');
+var uploadFile = picturesContainer.querySelector('#upload-file');
+var effectsContainer = picturesContainer.querySelector('.img-upload__overlay');
+var uploadCancel = picturesContainer.querySelector('#upload-cancel');
 
 // функция для event'a для открытия интерфейса с фильтрами по загрузке фото
 
