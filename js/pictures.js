@@ -106,7 +106,7 @@ var onPictureClick = function (evt) {
   if (evt.target.className === 'picture__img') {
     openBigPicture();
   }
-}
+};
 
 // вызываем слушатель по клику на маленькую картинку и соответсвенно открываем большую картнинку
 
@@ -124,7 +124,7 @@ pictures.addEventListener('keydown', function (evt) {
 
 var onBigPictureCloseClick = function () {
   closeBigPicture();
-}
+};
 
 // функционал открытия большой картинки. устанавливаем слушатель - по ESC закрытие, удаляем слушатель на клик по маленькой картинке
 // устанавливаем слушатель для клика по крестику "закрыть"
@@ -156,7 +156,7 @@ var uploadCancel = pictures.querySelector('#upload-cancel');
 
 var onUploadChange = function () {
   openUpload();
-}
+};
 
 // устанавливаем слушатель на клик по иконке загрузки фото и соответсвенно показываем интерфейс с фильтрами
 
@@ -171,7 +171,7 @@ var openUpload = function () {
   uploadFile.removeEventListener('change', onUploadChange);
   uploadCancel.addEventListener('click', onUploadCancelClick);
   uploadCancel.addEventListener('keydown', onUploadCancelPress);
-}
+};
 
 // функция закрытия окна редактирования фото, удаляем слушатель на ESC и утанавливаем слушатель для загрузки фото
 // удаляем слушатели по нажитию на ENTER и клик по крестику
@@ -182,7 +182,7 @@ var closeUpload = function () {
   uploadFile.addEventListener('change', onUploadChange);
   uploadCancel.removeEventListener('click', onUploadCancelClick);
   uploadCancel.removeEventListener('keydown', onUploadCancelPress);
-}
+};
 
 // функция для event'a при нажатии на ESC- закрывается интерфейс с фильтрами
 
@@ -190,13 +190,13 @@ var onUploadEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeUpload();
   }
-}
+};
 
 // функция для event'a при клике на крестик- закрывается интерфейс с фильтрами
 
 var onUploadCancelClick = function () {
   closeUpload();
-}
+};
 
 // функция для event'a при нажатии на ENTER на крестике - закрывается интерфейс с фильтрами
 
@@ -204,7 +204,7 @@ var onUploadCancelPress = function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     closeUpload();
   }
-}
+};
 
 // управление ползунком и фильтрами
 
@@ -216,12 +216,11 @@ var scaleLevel = effectsContainer.querySelector('.scale__level');
 var setDefaultPinPosition = function () {
   scalePin.style.left = '50%';
   scaleLevel.style.width = '50%';
-}
+};
 
 setDefaultPinPosition();
 
 var filterList = effectsContainer.querySelector('.effects__list');
-var scaleLine = effectsContainer.querySelector('.scale__line');
 
 // устанавливаем изначальное значение фильтра, которое будет меняться
 
@@ -234,7 +233,7 @@ filterList.addEventListener('change', onChange);
 // слушаем отпускание пина, обьявляем переменные 1.текущая позиция ползунка 2.стиль текущего фильтра
 // который расчитан в функции getValueFilter()
 
-scalePin.addEventListener('mouseup', function() {
+scalePin.addEventListener('mouseup', function () {
   var value = parseInt(scalePin.style.left, 10);
   var filterStyle = getValueFilter(currentFilter, value);
 });
@@ -242,7 +241,7 @@ scalePin.addEventListener('mouseup', function() {
 // функция рассчета фильтра в зависимости от положения ползунка и текущего эффекта
 
 var getValueFilter = function (filterType, value) {
-   var levelsFilters = {
+  var levelsFilters = {
     none: '',
     chrome: 'grayscale(' + value / 100 + ')',
     sepia: 'sepia(' + value / 100 + ')',
@@ -251,20 +250,16 @@ var getValueFilter = function (filterType, value) {
     heat: 'brightness(' + ((2 * value / 100) + 1) + ')'
   };
   return levelsFilters[filterType];
-}
+};
 
-var imagePreview = document.querySelector('.img-upload__preview');
-console.log(imagePreview);
+var imagePreview = document.querySelector('.img-upload__preview img');
 
 var onChange = function (evt) {
   var filterType = evt.target.value; // sepia;
-  imagePreview.classList.add('effects__preview--'+ filterType);
-  imagePreview.classList.remove('effects__preview--'+ currentFilter);
+  imagePreview.classList.add('effects__preview--' + filterType);
+  imagePreview.classList.remove('effects__preview--' + currentFilter);
   currentFilter = filterType;
-  var value = parseInt(scalePin.style.left, 10) //50
+  var value = parseInt(scalePin.style.left, 10); // 50
   var filterStyle = getValueFilter(filterType, value);
   imagePreview.style.filter = filterStyle;
-}
-
-var effectsItem = effectsContainer.querySelector('.effects__item')
-console.log(effectsItem)
+};
