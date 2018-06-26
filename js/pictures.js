@@ -254,3 +254,57 @@ scalePin.addEventListener('mouseup', function () {
   var value = parseInt(scalePin.style.left, 10);
   var filterStyle = getValueFilter(currentFilter, value);
 });
+
+// функцинал изменения размеров изображения
+
+var FULL_RESIZE = 1;
+var STEP_RESIZE = 0.25;
+var resize = FULL_RESIZE;
+
+var controlMinus = effectsContainer.querySelector('.resize__control--minus');
+var controlPlus = effectsContainer.querySelector('.resize__control--plus');
+var controlValue = effectsContainer.querySelector('.resize__control--value');
+
+imagePreview.style.transform = 'scale(' + FULL_RESIZE + ')';
+controlValue.value = resize * 100 + '%';
+
+var resizeRise = function () {
+  if (resize !== 1) {
+    resize += STEP_RESIZE;
+    imagePreview.style.transform = 'scale(' + resize + ')';
+    controlValue.value = resize * 100 + '%';
+  }
+};
+
+var resizeDecline = function () {
+  if (resize !== 0) {
+    resize -= STEP_RESIZE;
+    imagePreview.style.transform = 'scale(' + resize + ')';
+    controlValue.value = resize * 100 + '%';
+  }
+};
+
+controlPlus.addEventListener('click', function () {
+  resizeRise();
+});
+
+controlMinus.addEventListener('click', function () {
+  resizeDecline();
+});
+
+// валидация формы
+var NEW_HASHTAG = '#';
+var HASHTAG_LENGTH = 20;
+var HASHTAG_COUNT = 5;
+
+var hashtagInput = effectsContainer.querySelector('.text__hashtags');
+var commentInput = effectsContainer.querySelector('.text__description');
+
+hashtagInput.addEventListener('change', function (evt) {
+  var target = evt.target;
+  if (target.value.length <= HASHTAG_LENGTH) {
+    target.setCustomValidity('хеш-тег должен быть не более 20 символов');
+  } else {
+    target.setCustomValidity = (' ');
+  }
+});
