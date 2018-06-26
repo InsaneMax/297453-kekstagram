@@ -300,11 +300,35 @@ var HASHTAG_COUNT = 5;
 var hashtagInput = effectsContainer.querySelector('.text__hashtags');
 var commentInput = effectsContainer.querySelector('.text__description');
 
-hashtagInput.addEventListener('change', function (evt) {
-  var target = evt.target;
-  if (target.value.length <= HASHTAG_LENGTH) {
-    target.setCustomValidity('хеш-тег должен быть не более 20 символов');
-  } else {
-    target.setCustomValidity = (' ');
-  }
-});
+var onInputChange = function (evt) {
+  return evt.target.value.length;
+}
+
+hashtagInput.addEventListener('input', onInputChange);
+
+var moreThanFive = function (input) {
+  return input.value > 5;
+};
+
+var moreThanTwenty = function (input) {
+  return input.value > 20;
+}
+
+var countHashtags = function () {
+  hashtagInput += '';
+  var createArray = hashtagInput.split(',');
+}
+
+countHashtags();
+
+console.log(countHashtags())
+
+// var checkValidity = function (input) {
+//   if (moreThanFive(hashtagInput)) {
+//     hashtagInput.setCustomValidity('more than 5 symbols')
+//   } else {
+//     hashtagInput.setCustomValidity(' ');
+//   }
+// }
+
+// checkValidity(9);
