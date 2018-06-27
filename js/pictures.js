@@ -300,28 +300,74 @@ var HASHTAG_COUNT = 5;
 var hashtagInput = effectsContainer.querySelector('.text__hashtags');
 var commentInput = effectsContainer.querySelector('.text__description');
 
-var onInputChange = function (evt) {
-  return evt.target.value.length;
+var someString = '#hello  #hollyshit   #WTF? #superb! #nice=) #bullshit #no';
+
+// подсчет кол-ва хештегов
+
+var countHashtags = function (hashtags) {
+  hashtags += '';
+  var hashtagsArray = hashtags.split(/ +/);
+  for (var i = 0; i < hashtagsArray.length; i++) {
+    var count = 0;
+    count += i;
+  }
+  console.log(count + 1 + ' хештегов использовано');
 }
 
-hashtagInput.addEventListener('input', onInputChange);
+countHashtags(someString);
 
-var moreThanFive = function (input) {
-  return input.value > 5;
+// подсчет кол-вы символов в хеш-теге
+
+var countSymbols = function (hashtags) {
+  var hashtagsArray = hashtags.split(' ');
+  for(var i = 0; i < hashtagsArray.length; i++) {
+    console.log(hashtagsArray[i]);
+    for (var j = 0; j < hashtagsArray[i].length; j++) {
+
+    }
+      var countH = 0;
+      countH += j;
+      console.log(j + ' символов в этом хештеге')
+  }
 };
 
-var moreThanTwenty = function (input) {
-  return input.value > 20;
+countSymbols(someString);
+
+var haveHash = function (hashtags) {
+
 }
 
-var countHashtags = function () {
-  hashtagInput += '';
-  var createArray = hashtagInput.split(',');
-}
 
-countHashtags();
 
-console.log(countHashtags())
+
+
+
+
+
+
+// var onInputChange = function (evt) {
+//   return evt.target.value.length;
+// }
+
+// hashtagInput.addEventListener('input', onInputChange);
+
+// var moreThanFive = function (input) {
+//   return input.value > 5;
+// };
+
+// var moreThanTwenty = function (input) {
+//   return input.value > 20;
+// }
+
+// var countHashtags = function (value) {
+//   value += ''
+//   var createArray = value.split(',');
+//   for (var i = 0; i < createArray.length; i++) {
+//     var count = 0;
+//     count += i;
+//   }
+//   return createArray;
+// }
 
 // var checkValidity = function (input) {
 //   if (moreThanFive(hashtagInput)) {
