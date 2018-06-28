@@ -300,7 +300,7 @@ var HASHTAG_COUNT = 5;
 var hashtagInput = effectsContainer.querySelector('.text__hashtags');
 var commentInput = effectsContainer.querySelector('.text__description');
 
-var someString = '#hello  #hollyshit   #WTF? #superb! #nice=) #bullshit #no';
+var someString = '#hello #hollyshit #WTF? #superb! #nice=) #bullshit #no';
 
 // подсчет кол-ва хештегов
 
@@ -333,9 +333,17 @@ var countSymbols = function (hashtags) {
 
 countSymbols(someString);
 
-var haveHash = function (hashtags) {
-
+var indices = [];
+var array = ['#a', 'b', 'a', '#c', 'a', '#d'];
+var element = '#' +  array[i];
+var idx = array.indexOf(element);
+while (idx != -1) {
+  indices.push(idx);
+  idx = array.indexOf(element, idx + 1);
 }
+
+console.log(indices);
+// [0, 2, 4]
 
 
 
