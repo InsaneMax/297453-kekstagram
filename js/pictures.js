@@ -300,26 +300,35 @@ var HASHTAG_COUNT = 5;
 var hashtagInput = effectsContainer.querySelector('.text__hashtags');
 var commentInput = effectsContainer.querySelector('.text__description');
 
-var someString = '#hello #hollyshit #WTF? #superb! #nice=) #bullshit #no';
+
+// var onInputChange = function (evt) {
+//   return evt.target.value;
+// }
+// hashtagInput.addEventListener('change', onInputChange);
+
+hashtagInput.value = '#hello #oooh nice! #wtf?';
+
+var inputValue = hashtagInput.value;
+
+console.log(inputValue);
 
 // подсчет кол-ва хештегов
 
-var countHashtags = function (hashtags) {
-  hashtags += '';
-  var hashtagsArray = hashtags.split(/ +/);
+var moreThanFive = function (str) {
+  var hashtagsArray = str.split(/ +/);
   for (var i = 0; i < hashtagsArray.length; i++) {
     var count = 0;
     count += i;
   }
-  console.log(count + 1 + ' хештегов использовано');
+  return count > HASHTAG_COUNT;
 }
 
-countHashtags(someString);
+moreThanFive(inputValue);
 
 // подсчет кол-вы символов в хеш-теге
 
-var countSymbols = function (hashtags) {
-  var hashtagsArray = hashtags.split(' ');
+var countSymbols = function (str) {
+  var hashtagsArray = str.split(' ');
   for(var i = 0; i < hashtagsArray.length; i++) {
     console.log(hashtagsArray[i]);
     for (var j = 0; j < hashtagsArray[i].length; j++) {
@@ -331,58 +340,41 @@ var countSymbols = function (hashtags) {
   }
 };
 
-countSymbols(someString);
+countSymbols(inputValue);
 
-var indices = [];
-var array = ['#a', 'b', 'a', '#c', 'a', '#d'];
-var element = '#' +  array[i];
-var idx = array.indexOf(element);
-while (idx != -1) {
-  indices.push(idx);
-  idx = array.indexOf(element, idx + 1);
+// проверка на наличие повторяющихся хештегов в массиве
+
+var checkDuplicateHashtags = function (elem, str) {
+  str.split(/ +/);
+  return arr.indexOf(elem) !== arr.lastIndexOf(elem)
+};
+
+// проверка на наличие повторяющихся символов в строке
+
+var checkDuplicateHashtagSymbol = function (elem, str) {
+  return str.indexOf(elem) !== str.lastIndexOf(elem);
 }
 
-console.log(indices);
-// [0, 2, 4]
+var isHashtagSymbol = function (elem, str) {
+  if (str[0] !== elem) {
+    return true
+  }
+  return false
+}
 
-
-
-
-
-
-
-
-
-// var onInputChange = function (evt) {
-//   return evt.target.value.length;
-// }
-
-// hashtagInput.addEventListener('input', onInputChange);
-
-// var moreThanFive = function (input) {
-//   return input.value > 5;
-// };
-
-// var moreThanTwenty = function (input) {
-//   return input.value > 20;
-// }
-
-// var countHashtags = function (value) {
-//   value += ''
-//   var createArray = value.split(',');
-//   for (var i = 0; i < createArray.length; i++) {
-//     var count = 0;
-//     count += i;
-//   }
-//   return createArray;
-// }
-
-// var checkValidity = function (input) {
-//   if (moreThanFive(hashtagInput)) {
-//     hashtagInput.setCustomValidity('more than 5 symbols')
-//   } else {
-//     hashtagInput.setCustomValidity(' ');
+// var checkValidity = function (elem, str) {
+//   if (moreThanFive(str)) {
+//     srt.setCustomValidity('должно быть не более 5-ти хештегов');
+//   } else if (checkDuplicateHashtags(elem, arr)) {
+//     str.setCustomValidity('не должно быть повторяющихся хештегов');
+//   } else if (checkDuplicateHashtagSymbol(elem, str)) {
+//     str.setCustomValidity('не должно быть более одного символа "#" в одном хештеге');
+//     else if (isHashtagSymbol(elem, str)) {
+//     str.setCustomValidity('хештег должен начинаться с решетки "#"');
+//     } else {
+//       alert('wow!')
+//     }
 //   }
 // }
 
-// checkValidity(9);
+// checkValidity(NEW_HASHTAG, );
