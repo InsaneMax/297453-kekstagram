@@ -176,7 +176,7 @@ var closeUpload = function () {
 // функция для event'a при нажатии на ESC- закрывается интерфейс с фильтрами
 
 var onUploadEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.keyCode === ESC_KEYCODE && evt.target.className !== 'text__description') {
     closeUpload();
   }
 };
@@ -296,50 +296,67 @@ controlMinus.addEventListener('click', function () {
 
 var hashtagInput = effectsContainer.querySelector('.text__hashtags');
 var commentInput = effectsContainer.querySelector('.text__description');
+var submitBtn = effectsContainer.querySelector('.img-upload__submit');
 
 var checkDublicateHashtags = function (words) {
-  var lowerCaseWords = words.map(function(element) {
+  var lowerCaseWords = words.map(function (element) {
     return element.toLowerCase();
-  })
-  return lowerCaseWords.every(function(element) {
+  });
+  return lowerCaseWords.every(function (element) {
     return lowerCaseWords.indexOf(element) !== lowerCaseWords.lastIndexOf(element);
-  })
-}
+  });
+};
 
 var areHashtags = function (words) {
-  return words.every(function(word) {
+  return words.every(function (word) {
     return word[0] === '#' && word.lastIndexOf('#') === 0 && word.length > 2;
   });
-}
+};
 
 var checkHashtagsNumber = function (words) {
   return words.length < 5;
-}
+};
 
 var checkHashtagLength = function (words) {
   return words.every(function (word) {
-    return word.length < 20
+    return word.length < 20;
   });
-}
+};
 
 var element = hashtagInput; // input
 
 var checkHashtags = function (string) {
   var words = string.split(/ +/);
- console.log(words, checkHashtagLength(words));
   if (!areHashtags(words)) {
     element.setCustomValidity('Строка содержит невалидный хештег');
-  } else if(!checkHashtagsNumber(words)) {
+  } else if (!checkHashtagsNumber(words)) {
     element.setCustomValidity('Хештегов не должно быть больше 5');
-  } else if(!checkHashtagLength(words)) {
+  } else if (!checkHashtagLength(words)) {
     element.setCustomValidity('Длина хештега больше 20');
-  } else if(checkDublicateHashtags(words)) {
+  } else if (checkDublicateHashtags(words)) {
     element.setCustomValidity('Присутствуют повторяющиеся хештеги');
   } else {
     element.setCustomValidity('');
   }
-}
+};
 
-hashtagInput.addEventListener('change', function () {
+hashtagInput.addEventListener('blur', function () {
   checkHashtags(hashtagInput.value);
-})
+});
+
+
+var checkCommentLength = function (string) {
+  return string.length < 20;
+};
+
+var checkCommentField = function (string) {
+  if (!checkCommentLength(string)) {
+    commentInput.setCustomValidity('Длина комментария не должна привышать 140 символов');
+  } else {
+    commentInput.setCustomValidity(' ');
+  }
+};
+
+commentInput.addEventListener('blur', function () {
+  checkCommentField(commentInput.value);
+});
