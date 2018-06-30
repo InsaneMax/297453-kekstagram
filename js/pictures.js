@@ -254,3 +254,92 @@ scalePin.addEventListener('mouseup', function () {
   var value = parseInt(scalePin.style.left, 10);
   var filterStyle = getValueFilter(currentFilter, value);
 });
+
+// функцинал изменения размеров изображения
+
+var FULL_RESIZE = 1;
+var STEP_RESIZE = 0.25;
+var resize = FULL_RESIZE;
+
+var controlMinus = effectsContainer.querySelector('.resize__control--minus');
+var controlPlus = effectsContainer.querySelector('.resize__control--plus');
+var controlValue = effectsContainer.querySelector('.resize__control--value');
+
+imagePreview.style.transform = 'scale(' + FULL_RESIZE + ')';
+controlValue.value = resize * 100 + '%';
+
+var resizeRise = function () {
+  if (resize !== 1) {
+    resize += STEP_RESIZE;
+    imagePreview.style.transform = 'scale(' + resize + ')';
+    controlValue.value = resize * 100 + '%';
+  }
+};
+
+var resizeDecline = function () {
+  if (resize !== 0) {
+    resize -= STEP_RESIZE;
+    imagePreview.style.transform = 'scale(' + resize + ')';
+    controlValue.value = resize * 100 + '%';
+  }
+};
+
+controlPlus.addEventListener('click', function () {
+  resizeRise();
+});
+
+controlMinus.addEventListener('click', function () {
+  resizeDecline();
+});
+
+// валидация формы
+
+var hashtagInput = effectsContainer.querySelector('.text__hashtags');
+var commentInput = effectsContainer.querySelector('.text__description');
+
+var checkDublicateHashtags = function (words) {
+  var lowerCaseWords = words.map(function(element) {
+    return element.toLowerCase();
+  })
+  return lowerCaseWords.every(function(element) {
+    return lowerCaseWords.indexOf(element) !== lowerCaseWords.lastIndexOf(element);
+  })
+}
+
+var areHashtags = function (words) {
+  return words.every(function(word) {
+    return word[0] === '#' && word.lastIndexOf('#') === 0 && word.length > 2;
+  });
+}
+
+var checkHashtagsNumber = function (words) {
+  return words.length < 5;
+}
+
+var checkHashtagLength = function (words) {
+  return words.every(function (word) {
+    return word.length < 20
+  });
+}
+
+var element = hashtagInput; // input
+
+var checkHashtags = function (string) {
+  var words = string.split(/ +/);
+ console.log(words, checkHashtagLength(words));
+  if (!areHashtags(words)) {
+    element.setCustomValidity('Строка содержит невалидный хештег');
+  } else if(!checkHashtagsNumber(words)) {
+    element.setCustomValidity('Хештегов не должно быть больше 5');
+  } else if(!checkHashtagLength(words)) {
+    element.setCustomValidity('Длина хештега больше 20');
+  } else if(checkDublicateHashtags(words)) {
+    element.setCustomValidity('Присутствуют повторяющиеся хештеги');
+  } else {
+    element.setCustomValidity('');
+  }
+}
+
+hashtagInput.addEventListener('change', function () {
+  checkHashtags(hashtagInput.value);
+})
