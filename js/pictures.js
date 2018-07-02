@@ -203,8 +203,8 @@ var scaleLevel = effectsContainer.querySelector('.scale__level');
 // функция позиционирования ползунка на шкале
 
 var setDefaultPinPosition = function () {
-  scalePin.style.left = '30%';
-  scaleLevel.style.width = '30%';
+  scalePin.style.left = '40%';
+  scaleLevel.style.width = '40%';
 };
 
 setDefaultPinPosition();
@@ -250,9 +250,32 @@ filterList.addEventListener('change', onChange);
 // слушаем отпускание пина, обьявляем переменные 1.текущая позиция ползунка 2.стиль текущего фильтра
 // который расчитан в функции getValueFilter()
 
-scalePin.addEventListener('mouseup', function () {
-  var value = parseInt(scalePin.style.left, 10);
-  var filterStyle = getValueFilter(currentFilter, value);
+scalePin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  // var value = parseInt(scalePin.style.left, 10);
+  // var filterStyle = getValueFilter(currentFilter, value);
+
+  var startCoords = evt.clientX;
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift =  startCoords.x - moveEvt.clientX;
+    startCoords = moveEvt.clientX;
+
+    getValueFilter(currentFilter, scalePin.offsetLeft - shift);
+  }
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
 
 // функцинал изменения размеров изображения
