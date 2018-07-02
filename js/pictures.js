@@ -199,6 +199,7 @@ var onUploadCancelPress = function (evt) {
 
 var scalePin = effectsContainer.querySelector('.scale__pin');
 var scaleLevel = effectsContainer.querySelector('.scale__level');
+var scaleLineElement = effectsContainer.querySelector('.scale__line');
 
 // функция позиционирования ползунка на шкале
 
@@ -250,33 +251,45 @@ filterList.addEventListener('change', onChange);
 // слушаем отпускание пина, обьявляем переменные 1.текущая позиция ползунка 2.стиль текущего фильтра
 // который расчитан в функции getValueFilter()
 
-scalePin.addEventListener('mousedown', function (evt) {
-  evt.preventDefault();
 
   // var value = parseInt(scalePin.style.left, 10);
   // var filterStyle = getValueFilter(currentFilter, value);
 
-  var startCoords = evt.clientX;
 
-  var onMouseMove = function (moveEvt) {
-    moveEvt.preventDefault();
+var onMouseMove = function (moveEvt) {
+  moveEvt.preventDefault();
 
-    var shift =  startCoords.x - moveEvt.clientX;
-    startCoords = moveEvt.clientX;
+  var shiftX =  startX - moveEvt.clientX;
+  var startX = moveEvt.clientX;
 
-    getValueFilter(currentFilter, scalePin.offsetLeft - shift);
+  var scaleLineWidth = scaleLineElement.offsetWidth;
+  var scalePinCoordsX = scalePin.offsetLeft - shiftX;
+
+  if (scalePinCoordsX >= 0 && scalePinCoordsX > scaleLineWidth) {
+    scalePin.style.left = scalePinCoordsX + '%';
+    scaleLevel.style.width = scalePinCoordsX + '%';
+    getValueFilter(scalePinCoordsX, scaleLineWidth);
+    var valuePersent = scalePinCoordsX / scaleLineWidth * 100;
+
   }
+}
 
-  var onMouseUp = function (upEvt) {
-    upEvt.preventDefault();
+var onMouseUp = function (upEvt) {
+  upEvt.preventDefault();
 
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  };
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+};
 
+var onMouseDown = function (evt) {
+  evt.preventDefault();
+
+  var startX = evt.clientX;
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
-});
+}
+
+scalePin.addEventListener('mousedown', onMouseDown)
 
 // функцинал изменения размеров изображения
 
