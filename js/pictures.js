@@ -185,13 +185,23 @@ var onUploadEscPress = function (evt) {
 
 var onUploadCancelClick = function () {
   closeUpload();
+  scalePin.style.left = '100%';
+  scaleLevel.style.width = '100%';
+  getValueFilter('', 100);
+  controlPlus.addEventListener('click', onControlPlusClick);
+  controlMinus.addEventListener('click', onControlMinusClick);
 };
 
 // функция для event'a при нажатии на ENTER на крестике - закрывается интерфейс с фильтрами
 
 var onUploadCancelPress = function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    closeUpload();
+    getValueFilter('', 100);
+    scalePin.style.left = '100%';
+    scaleLevel.style.width = '100%';
+    getValueFilter()
+    controlPlus.addEventListener('click', onControlPlusClick);
+    controlMinus.addEventListener('click', onControlMinusClick);
   }
 };
 
@@ -200,6 +210,9 @@ var onUploadCancelPress = function (evt) {
 var scalePin = effectsContainer.querySelector('.scale__pin');
 var scaleLevel = effectsContainer.querySelector('.scale__level');
 var scaleLineElement = effectsContainer.querySelector('.scale__line');
+var scaleContainer = effectsContainer.querySelector('.scale');
+
+console.log(scaleContainer)
 
 // функция позиционирования ползунка на шкале
 
@@ -238,7 +251,14 @@ var onChange = function (evt) {
   var filterType = evt.target.value; // sepia;
   imagePreview.classList.add('effects__preview--' + filterType);
   imagePreview.classList.remove('effects__preview--' + currentFilter);
+
+  if (filterType !== 'none' || '') {
+  scaleContainer.classList.remove('hidden');
   currentFilter = filterType;
+  } else {
+    scaleContainer.classList.add('hidden');
+  }
+
   var value = parseInt(scalePin.style.left, 10); // 30
   var filterStyle = getValueFilter(filterType, value);
   imagePreview.style.filter = filterStyle;
@@ -271,6 +291,8 @@ var onMouseMove = function (moveEvt) {
     imagePreview.style.filter = filterStyle;
   }
 };
+
+console.log(currentFilter.className);
 
 var onMouseUp = function (upEvt) {
   upEvt.preventDefault();
@@ -318,13 +340,17 @@ var resizeDecline = function () {
   }
 };
 
-controlPlus.addEventListener('click', function () {
+var onControlPlusClick = function () {
   resizeRise();
-});
+}
 
-controlMinus.addEventListener('click', function () {
+var onControlMinusClick = function () {
   resizeDecline();
-});
+}
+
+controlPlus.addEventListener('click', onControlPlusClick);
+
+controlMinus.addEventListener('click', onControlMinusClick);
 
 // валидация формы
 
