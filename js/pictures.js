@@ -251,28 +251,26 @@ filterList.addEventListener('change', onChange);
 // слушаем отпускание пина, обьявляем переменные 1.текущая позиция ползунка 2.стиль текущего фильтра
 // который расчитан в функции getValueFilter()
 
-
-  // var value = parseInt(scalePin.style.left, 10);
-  // var filterStyle = getValueFilter(currentFilter, value);
-
+var startX;
 
 var onMouseMove = function (moveEvt) {
   moveEvt.preventDefault();
 
-  var shiftX =  startX - moveEvt.clientX;
-  var startX = moveEvt.clientX;
+  var shiftX = startX - moveEvt.clientX;
+  startX = moveEvt.clientX;
 
   var scaleLineWidth = scaleLineElement.offsetWidth;
   var scalePinCoordsX = scalePin.offsetLeft - shiftX;
 
-  if (scalePinCoordsX >= 0 && scalePinCoordsX > scaleLineWidth) {
-    scalePin.style.left = scalePinCoordsX + '%';
-    scaleLevel.style.width = scalePinCoordsX + '%';
-    getValueFilter(scalePinCoordsX, scaleLineWidth);
+  if (scalePinCoordsX >= 0 && scalePinCoordsX <= scaleLineWidth) {
     var valuePersent = scalePinCoordsX / scaleLineWidth * 100;
+    scalePin.style.left = valuePersent + '%';
+    scaleLevel.style.width = valuePersent + '%';
 
+    var filterStyle = getValueFilter(currentFilter, valuePersent);
+    imagePreview.style.filter = filterStyle;
   }
-}
+};
 
 var onMouseUp = function (upEvt) {
   upEvt.preventDefault();
@@ -284,12 +282,12 @@ var onMouseUp = function (upEvt) {
 var onMouseDown = function (evt) {
   evt.preventDefault();
 
-  var startX = evt.clientX;
+  startX = evt.clientX;
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
-}
+};
 
-scalePin.addEventListener('mousedown', onMouseDown)
+scalePin.addEventListener('mousedown', onMouseDown);
 
 // функцинал изменения размеров изображения
 
