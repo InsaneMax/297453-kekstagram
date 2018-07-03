@@ -176,7 +176,7 @@ var closeUpload = function () {
 // функция для event'a при нажатии на ESC- закрывается интерфейс с фильтрами
 
 var onUploadEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.keyCode === ESC_KEYCODE && evt.target.className !== 'text__description') {
     closeUpload();
   }
 };
@@ -199,12 +199,13 @@ var onUploadCancelPress = function (evt) {
 
 var scalePin = effectsContainer.querySelector('.scale__pin');
 var scaleLevel = effectsContainer.querySelector('.scale__level');
+var scaleLineElement = effectsContainer.querySelector('.scale__line');
 
 // функция позиционирования ползунка на шкале
 
 var setDefaultPinPosition = function () {
-  scalePin.style.left = '30%';
-  scaleLevel.style.width = '30%';
+  scalePin.style.left = '40%';
+  scaleLevel.style.width = '40%';
 };
 
 setDefaultPinPosition();
@@ -250,10 +251,43 @@ filterList.addEventListener('change', onChange);
 // слушаем отпускание пина, обьявляем переменные 1.текущая позиция ползунка 2.стиль текущего фильтра
 // который расчитан в функции getValueFilter()
 
-scalePin.addEventListener('mouseup', function () {
-  var value = parseInt(scalePin.style.left, 10);
-  var filterStyle = getValueFilter(currentFilter, value);
-});
+var startX;
+
+var onMouseMove = function (moveEvt) {
+  moveEvt.preventDefault();
+
+  var shiftX = startX - moveEvt.clientX;
+  startX = moveEvt.clientX;
+
+  var scaleLineWidth = scaleLineElement.offsetWidth;
+  var scalePinCoordsX = scalePin.offsetLeft - shiftX;
+
+  if (scalePinCoordsX >= 0 && scalePinCoordsX <= scaleLineWidth) {
+    var valuePersent = scalePinCoordsX / scaleLineWidth * 100;
+    scalePin.style.left = valuePersent + '%';
+    scaleLevel.style.width = valuePersent + '%';
+
+    var filterStyle = getValueFilter(currentFilter, valuePersent);
+    imagePreview.style.filter = filterStyle;
+  }
+};
+
+var onMouseUp = function (upEvt) {
+  upEvt.preventDefault();
+
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+};
+
+var onMouseDown = function (evt) {
+  evt.preventDefault();
+
+  startX = evt.clientX;
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+};
+
+scalePin.addEventListener('mousedown', onMouseDown);
 
 // функцинал изменения размеров изображения
 
@@ -298,48 +332,64 @@ var hashtagInput = effectsContainer.querySelector('.text__hashtags');
 var commentInput = effectsContainer.querySelector('.text__description');
 
 var checkDublicateHashtags = function (words) {
-  var lowerCaseWords = words.map(function(element) {
+  var lowerCaseWords = words.map(function (element) {
     return element.toLowerCase();
-  })
-  return lowerCaseWords.every(function(element) {
+  });
+  return lowerCaseWords.every(function (element) {
     return lowerCaseWords.indexOf(element) !== lowerCaseWords.lastIndexOf(element);
-  })
-}
+  });
+};
 
 var areHashtags = function (words) {
-  return words.every(function(word) {
+  return words.every(function (word) {
     return word[0] === '#' && word.lastIndexOf('#') === 0 && word.length > 2;
   });
-}
+};
 
 var checkHashtagsNumber = function (words) {
   return words.length < 5;
-}
+};
 
 var checkHashtagLength = function (words) {
   return words.every(function (word) {
-    return word.length < 20
+    return word.length < 20;
   });
-}
+};
 
 var element = hashtagInput; // input
 
 var checkHashtags = function (string) {
   var words = string.split(/ +/);
- console.log(words, checkHashtagLength(words));
   if (!areHashtags(words)) {
     element.setCustomValidity('Строка содержит невалидный хештег');
-  } else if(!checkHashtagsNumber(words)) {
+  } else if (!checkHashtagsNumber(words)) {
     element.setCustomValidity('Хештегов не должно быть больше 5');
-  } else if(!checkHashtagLength(words)) {
+  } else if (!checkHashtagLength(words)) {
     element.setCustomValidity('Длина хештега больше 20');
-  } else if(checkDublicateHashtags(words)) {
+  } else if (checkDublicateHashtags(words)) {
     element.setCustomValidity('Присутствуют повторяющиеся хештеги');
   } else {
     element.setCustomValidity('');
   }
-}
+};
 
-hashtagInput.addEventListener('change', function () {
+hashtagInput.addEventListener('blur', function () {
   checkHashtags(hashtagInput.value);
-})
+});
+
+
+var checkCommentLength = function (string) {
+  return string.length < 140;
+};
+
+var checkCommentField = function (string) {
+  if (!checkCommentLength(string)) {
+    commentInput.setCustomValidity('Длина комментария не должна привышать 140 символов');
+  } else {
+    commentInput.setCustomValidity(' ');
+  }
+};
+
+commentInput.addEventListener('blur', function () {
+  checkCommentField(commentInput.value);
+});
