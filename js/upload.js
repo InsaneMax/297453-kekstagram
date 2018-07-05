@@ -2,9 +2,11 @@
 
 // загрузка изображения и показ формы
 
-var uploadFile = picturesContainer.querySelector('#upload-file');
-var effectsContainer = picturesContainer.querySelector('.img-upload__overlay');
-var uploadCancel = picturesContainer.querySelector('#upload-cancel');
+(function () {
+
+  var uploadFile = picturesContainer.querySelector('#upload-file');
+  var effectsContainer = picturesContainer.querySelector('.img-upload__overlay');
+  var uploadCancel = picturesContainer.querySelector('#upload-cancel');
 
 // функция для event'a для открытия интерфейса с фильтрами по загрузке фото
 
@@ -190,4 +192,6 @@ controlPlus.addEventListener('click', function () {
 controlMinus.addEventListener('click', function () {
   resizeDecline();
 });
+
+})();
 
